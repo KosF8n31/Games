@@ -5,13 +5,16 @@
 #include <iostream>
 #include <Windows.h>
 
-
 class Game {
 	int type;
 	int attempt;
 	int high;
+	int res;
 public:
 	Game() :type(1), attempt(10), high(100) {}
+	void setRes(int _res) {
+		res = _res;
+	}
 	void setType(int _type) {
 		type = _type;
 	}
@@ -26,12 +29,13 @@ public:
 		return type;
 	}
 
-	void start() {
-		if (type == 1) playPerson();
-		else if (type == 2) playComp();
+	int start() {
+		if (type == 1) res = playPerson();
+		else if (type == 2) res = playComp();
+		return res;
 	}
 
-	void playPerson() {
+	int playPerson() {
 		srand(time(0));
 		int number = rand() % high;
 		int version;
@@ -45,25 +49,18 @@ public:
 			else if (version > number) {
 				system("cls");
 				std::cout << "Меньше" << std::endl;
-
 			}
 			else if (version == number) {
-				system("cls");
-				std::cout << "Победа!" << std::endl;
-				system("pause");
+				return 1;
 				break;
 			}
 			std::cout << "Введите число - ";
 			std::cin >> version;
 		}
-		if (version != number) {
-			system("cls");
-			std::cout << "Вы проиграли!" << std::endl;
-			system("pause");
-		}
-	}
+		if (version != number) return 0;
 
-	void playComp() {
+	}
+	int playComp() {
 		int low = 0;
 		int mid = (high + low) / 2;
 		int sign = 0;
@@ -78,18 +75,14 @@ public:
 			if (sign == 0) high = mid - 1;
 			else if (sign == 2) low = mid + 1;
 			else if (sign == 1) {
-				system("cls");
-				std::cout << "Ваше число = " << isk << std::endl;
-				system("pause");
+				return isk;
 				break;
 			}
 			mid = (high + low) / 2;
 			if (mid == isk) {
-				system("cls");
-				std::cout << "Ты обманул меня!" << std::endl;
-				system("pause");
+				return -1;
 				break;
-			}
+			} 
 		}
 	}
 	void setSettings() {
@@ -116,12 +109,9 @@ public:
 	}
 };
 
-
-
-
 int main() {
 	SetConsoleOutputCP(CP_UTF8);
-	int user;
+	int user, res;
 	int high = 100;
 	int attempt = 10;
 	Game game;
@@ -138,12 +128,32 @@ int main() {
 			case 1:
 				system("cls");
 				game.setType(1);
-				game.start();
+				res = game.start();
+				if (res == 1) {
+					system("cls");
+					std::cout << "Победа!" << std::endl;
+					system("pause");
+				}
+				else if (res == 0) {
+					system("cls");
+					std::cout << "Вы проиграли!" << std::endl;
+					system("pause");
+				}
 				break;
 			case 2:
 				system("cls");
 				game.setType(2);
-				game.start();
+				res =  game.start();
+				if (res == -1) {
+					system("cls");
+					std::cout << "Ты обманул меня!" << std::endl;
+					system("pause");
+				}
+				else {
+					system("cls");
+					std::cout << "Ваше число = " << res << std::endl;
+					system("pause");
+				}
 				break;
 			case 3:
 				system("cls");
